@@ -1,0 +1,1 @@
+Custom system for lighting involving an ESP32 with controls through an iOS app and integration into Spotify's API for lighting based on the currently playing album art with the use of a connected device over serial and/or a web server
