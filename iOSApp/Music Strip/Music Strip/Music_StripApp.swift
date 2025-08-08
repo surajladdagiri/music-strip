@@ -23,6 +23,7 @@ class AppState: ObservableObject {
 struct Music_StripApp: App {
     @StateObject var appState: AppState
     @StateObject var blemanager: BLEManager
+    @StateObject var spotifymanager = SpotifyManager()
     init() {
         let appState = AppState()
         _appState = StateObject(wrappedValue: appState)
@@ -34,7 +35,7 @@ struct Music_StripApp: App {
             if appState.currPage == .Bluetooth {
                 BluetoothView(appState: appState, ble: blemanager)
             }else if appState.currPage == .ManualControl {
-                ModeView(appState: appState, ble: blemanager)
+                ModeView(appState: appState, ble: blemanager, spotifymanager: spotifymanager)
             }else{
                 ErrorView()
             }

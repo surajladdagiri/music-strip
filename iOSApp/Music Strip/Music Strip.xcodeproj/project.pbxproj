@@ -9,6 +9,7 @@
 /* Begin PBXBuildFile section */
 		446360882E441E6B0077A2E2 /* CoreBluetooth.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 446360872E441E6B0077A2E2 /* CoreBluetooth.framework */; };
 		446360AA2E4471B70077A2E2 /* ModernSlider in Frameworks */ = {isa = PBXBuildFile; productRef = 446360A92E4471B70077A2E2 /* ModernSlider */; };
+		44D6CF262E4565EE00E2A1BF /* SpotifyiOS in Frameworks */ = {isa = PBXBuildFile; productRef = 44D6CF252E4565EE00E2A1BF /* SpotifyiOS */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXContainerItemProxy section */
@@ -59,6 +60,7 @@
 			buildActionMask = 2147483647;
 			files = (
 				446360AA2E4471B70077A2E2 /* ModernSlider in Frameworks */,
+				44D6CF262E4565EE00E2A1BF /* SpotifyiOS in Frameworks */,
 				446360882E441E6B0077A2E2 /* CoreBluetooth.framework in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
@@ -130,6 +132,7 @@
 			name = "Music Strip";
 			packageProductDependencies = (
 				446360A92E4471B70077A2E2 /* ModernSlider */,
+				44D6CF252E4565EE00E2A1BF /* SpotifyiOS */,
 			);
 			productName = "Music Strip";
 			productReference = 446360572E441CF30077A2E2 /* Music Strip.app */;
@@ -215,6 +218,7 @@
 			minimizedProjectReferenceProxies = 1;
 			packageReferences = (
 				446360A82E4471B70077A2E2 /* XCRemoteSwiftPackageReference "ModernSlider" */,
+				44D6CF242E4565EE00E2A1BF /* XCRemoteSwiftPackageReference "ios-sdk" */,
 			);
 			preferredProjectObjectVersion = 77;
 			productRefGroup = 446360582E441CF30077A2E2 /* Products */;
@@ -601,6 +605,14 @@
 				kind = branch;
 			};
 		};
+		44D6CF242E4565EE00E2A1BF /* XCRemoteSwiftPackageReference "ios-sdk" */ = {
+			isa = XCRemoteSwiftPackageReference;
+			repositoryURL = "https://github.com/spotify/ios-sdk";
+			requirement = {
+				branch = master;
+				kind = branch;
+			};
+		};
 /* End XCRemoteSwiftPackageReference section */
 
 /* Begin XCSwiftPackageProductDependency section */
@@ -608,6 +620,11 @@
 			isa = XCSwiftPackageProductDependency;
 			package = 446360A82E4471B70077A2E2 /* XCRemoteSwiftPackageReference "ModernSlider" */;
 			productName = ModernSlider;
+		};
+		44D6CF252E4565EE00E2A1BF /* SpotifyiOS */ = {
+			isa = XCSwiftPackageProductDependency;
+			package = 44D6CF242E4565EE00E2A1BF /* XCRemoteSwiftPackageReference "ios-sdk" */;
+			productName = SpotifyiOS;
 		};
 /* End XCSwiftPackageProductDependency section */
 	};

@@ -16,10 +16,11 @@ struct ModeView: View {
     @ObservedObject var blemanager: BLEManager
     @ObservedObject var appState: AppState
     @Environment(\.scenePhase) private var scenePhase
-    
-    init(appState: AppState, ble: BLEManager){
+    @ObservedObject var spotifymanager: SpotifyManager
+    init(appState: AppState, ble: BLEManager, spotifymanager: SpotifyManager){
         self.appState = appState
         self.blemanager = ble
+        self.spotifymanager = spotifymanager
     }
     
     var body: some View {
@@ -30,7 +31,37 @@ struct ModeView: View {
                         .aspectRatio(contentMode: .fit)
                         .frame(width: 80, height: 80)
                         .foregroundColor(.yellow)
-                        .padding(.bottom, 400)
+                        .padding(.bottom)
+                    if let albumArt = spotifymanager.currAlbumArt {
+                                    Image(uiImage: albumArt)
+                                        .resizable()
+                                        .scaledToFit()
+                                        .frame(width: 200, height: 200)
+                                        .cornerRadius(30)
+                                } else {
+                                    Text("No album art available.")
+                                        .padding()
+                                }
+                    VStack{
+                        VStack{
+                            Button {
+                                spotifymanager.authorize()
+                            } label:{
+                                Image(systemName: "wave.3.up.circle.fill")
+                                    .resizable()
+                                    .frame(width: 100, height: 100)
+                            }
+                            .frame(width: 150, height: 150)
+                            .background(Color.gray.opacity(0.2))
+                            .cornerRadius(30)
+                            .onOpenURL { url in
+                                spotifymanager.handleOpenURL(url)
+                            }
+                            
+                            Text("Spotify")
+                                .fontWeight(.bold)
+                        }
+                        
                         HStack{
                             VStack{
                                 Button {
@@ -66,7 +97,12 @@ struct ModeView: View {
                                     .fontWeight(.bold)
                             }.padding()
                         }
-                    //}
+                        
+                    }
+                    
+                    
+                    
+                    
                     .navigationDestination(isPresented: $GoToManual){
                         ManualControlView(appState: appState, ble: blemanager)
                     }
