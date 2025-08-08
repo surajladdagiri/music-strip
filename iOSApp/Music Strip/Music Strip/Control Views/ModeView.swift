@@ -47,7 +47,7 @@ struct ModeView: View {
                             Button {
                                 spotifymanager.authorize()
                             } label:{
-                                Image(systemName: "wave.3.up.circle.fill")
+                                Image(systemName: "music.note")
                                     .resizable()
                                     .frame(width: 100, height: 100)
                             }
@@ -58,7 +58,7 @@ struct ModeView: View {
                                 spotifymanager.handleOpenURL(url)
                             }
                             
-                            Text("Spotify")
+                            Text("Music")
                                 .fontWeight(.bold)
                         }
                         

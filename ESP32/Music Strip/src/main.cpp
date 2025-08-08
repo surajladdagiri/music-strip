@@ -121,8 +121,6 @@ class CommandCallback : public BLECharacteristicCallbacks {
 
 
 
-
-
 void retrievePreferences() {
   preferences.begin("Music Strip", false); 
   speed = preferences.getInt("speed", 60);
@@ -341,6 +339,12 @@ void serialTestTask(void *parameter) {
   }
 }
 
+void BLEAdvertisingTask(void *parameter) {
+  while (true) {
+    pAdvertising->start();
+    vTaskDelay(pdMS_TO_TICKS(10000));
+  }
+}
 
 void setup() {
   Serial.begin(115200);
@@ -351,8 +355,9 @@ void setup() {
   //mode = MANUAL;
   //manualAnim = MANUAL_SWAP;
   start_bluetooth();
-  xTaskCreatePinnedToCore(lightTask, "Light Task", 4096, NULL, 1, NULL,1);
-  xTaskCreatePinnedToCore(serialTestTask, "Serial Test Task", 4096, NULL, 1, NULL, 0);
+  xTaskCreatePinnedToCore(lightTask, "Light Task", 4096, NULL, 2, NULL, 1);
+  xTaskCreatePinnedToCore(serialTestTask, "Serial Test Task", 4096, NULL, 2, NULL, 0);
+  xTaskCreatePinnedToCore(BLEAdvertisingTask, "BLE Advertising Task", 4096, NULL, 1, NULL, 0);
 }
 
 void loop() {
