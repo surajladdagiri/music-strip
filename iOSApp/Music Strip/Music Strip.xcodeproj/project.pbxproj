@@ -7,6 +7,7 @@
 	objects = {
 
 /* Begin PBXBuildFile section */
+		44125DE02E48397800BC8D57 /* ColorThiefSwift in Frameworks */ = {isa = PBXBuildFile; productRef = 44125DDF2E48397800BC8D57 /* ColorThiefSwift */; };
 		446360882E441E6B0077A2E2 /* CoreBluetooth.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 446360872E441E6B0077A2E2 /* CoreBluetooth.framework */; };
 		446360AA2E4471B70077A2E2 /* ModernSlider in Frameworks */ = {isa = PBXBuildFile; productRef = 446360A92E4471B70077A2E2 /* ModernSlider */; };
 		44D6CF262E4565EE00E2A1BF /* SpotifyiOS in Frameworks */ = {isa = PBXBuildFile; productRef = 44D6CF252E4565EE00E2A1BF /* SpotifyiOS */; };
@@ -62,6 +63,7 @@
 				446360AA2E4471B70077A2E2 /* ModernSlider in Frameworks */,
 				44D6CF262E4565EE00E2A1BF /* SpotifyiOS in Frameworks */,
 				446360882E441E6B0077A2E2 /* CoreBluetooth.framework in Frameworks */,
+				44125DE02E48397800BC8D57 /* ColorThiefSwift in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -133,6 +135,7 @@
 			packageProductDependencies = (
 				446360A92E4471B70077A2E2 /* ModernSlider */,
 				44D6CF252E4565EE00E2A1BF /* SpotifyiOS */,
+				44125DDF2E48397800BC8D57 /* ColorThiefSwift */,
 			);
 			productName = "Music Strip";
 			productReference = 446360572E441CF30077A2E2 /* Music Strip.app */;
@@ -219,6 +222,7 @@
 			packageReferences = (
 				446360A82E4471B70077A2E2 /* XCRemoteSwiftPackageReference "ModernSlider" */,
 				44D6CF242E4565EE00E2A1BF /* XCRemoteSwiftPackageReference "ios-sdk" */,
+				44125DDE2E48397800BC8D57 /* XCRemoteSwiftPackageReference "ColorThiefSwift" */,
 			);
 			preferredProjectObjectVersion = 77;
 			productRefGroup = 446360582E441CF30077A2E2 /* Products */;
@@ -597,6 +601,14 @@
 /* End XCConfigurationList section */
 
 /* Begin XCRemoteSwiftPackageReference section */
+		44125DDE2E48397800BC8D57 /* XCRemoteSwiftPackageReference "ColorThiefSwift" */ = {
+			isa = XCRemoteSwiftPackageReference;
+			repositoryURL = "https://github.com/yamoridon/ColorThiefSwift";
+			requirement = {
+				kind = upToNextMajorVersion;
+				minimumVersion = 0.5.0;
+			};
+		};
 		446360A82E4471B70077A2E2 /* XCRemoteSwiftPackageReference "ModernSlider" */ = {
 			isa = XCRemoteSwiftPackageReference;
 			repositoryURL = "https://github.com/arjun-dureja/ModernSlider";
@@ -616,6 +628,11 @@
 /* End XCRemoteSwiftPackageReference section */
 
 /* Begin XCSwiftPackageProductDependency section */
+		44125DDF2E48397800BC8D57 /* ColorThiefSwift */ = {
+			isa = XCSwiftPackageProductDependency;
+			package = 44125DDE2E48397800BC8D57 /* XCRemoteSwiftPackageReference "ColorThiefSwift" */;
+			productName = ColorThiefSwift;
+		};
 		446360A92E4471B70077A2E2 /* ModernSlider */ = {
 			isa = XCSwiftPackageProductDependency;
 			package = 446360A82E4471B70077A2E2 /* XCRemoteSwiftPackageReference "ModernSlider" */;

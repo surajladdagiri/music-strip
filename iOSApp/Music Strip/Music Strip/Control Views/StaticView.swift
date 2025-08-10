@@ -14,7 +14,7 @@ struct StaticView: View {
     @State private var BrightnessIcon = "sun.min.fill"
     @State private var SpeedIcon = "tortoise.fill"
     @State private var showPicker = false
-    @State private var CurrColor: Color = Color(red: 1, green: 1, blue:1)
+    @State private var CurrColor: UIColor = UIColor(red: 1, green: 1, blue:1, alpha: 1)
     @ObservedObject var blemanager: BLEManager
     @ObservedObject var appState: AppState
     @Environment(\.scenePhase) private var scenePhase
@@ -37,12 +37,9 @@ struct StaticView: View {
                 
                     VStack{
                         
-                        ColorPicker("   Pick a Color", selection: $CurrColor, supportsOpacity: false)
-                            .frame(width: 200, height:40)
-                            .background(CurrColor)
-                            .cornerRadius(15)
-                            .opacity(0.7)
-                        
+                        Button("Pick a color"){
+                            showPicker = true
+                        }
                         
                         HStack{
                             VStack {
@@ -93,11 +90,7 @@ struct StaticView: View {
                             }
                         }
                     }
-                    .onChange(of: scenePhase){ oldPhase, newPhase in
-                        if newPhase == .background || newPhase == .inactive {
-                            blemanager.disconnect()
-                        }
-                    }
+                    
         }
         
     }

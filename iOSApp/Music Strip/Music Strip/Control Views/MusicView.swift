@@ -1,19 +1,13 @@
 //
-//  ModeView.swift
+//  MusicView.swift
 //  Music Strip
 //
-//  Created by Suraj Laddagiri  on 8/6/25.
+//  Created by Suraj Laddagiri  on 8/9/25.
 //
 
 import SwiftUI
 
-
-
-
-
-struct ModeView: View {
-    @State var GoToManual = false
-    @State var GoToMusic = false
+struct MusicView: View {
     @ObservedObject var blemanager: BLEManager
     @ObservedObject var appState: AppState
     @Environment(\.scenePhase) private var scenePhase
@@ -26,7 +20,6 @@ struct ModeView: View {
     }
     
     var body: some View {
-            NavigationStack {
                 VStack(spacing: 20){
                     Image(systemName: "lightbulb")
                         .resizable()
@@ -55,33 +48,26 @@ struct ModeView: View {
                     VStack{
                         VStack{
                             Button {
-                                if spotifymanager.appRemote.isConnected {
-                                    GoToMusic = true
-                                }else{
-                                    spotifymanager.authorize()
-                                }
+                                blemanager.sendCommand("spotify:snake")
                             } label:{
-                                Image(systemName: "music.note")
+                                Image(systemName: "arrowshape.right.circle")
                                     .resizable()
                                     .frame(width: 100, height: 100)
                             }
                             .frame(width: 150, height: 150)
                             .background(Color.gray.opacity(0.2))
                             .cornerRadius(30)
-                            .onOpenURL { url in
-                                spotifymanager.handleOpenURL(url)
-                            }
                             
-                            Text("Music")
+                            Text("Snake")
                                 .fontWeight(.bold)
                         }
                         
                         HStack{
                             VStack{
                                 Button {
-                                    blemanager.sendCommand("mode:off")
+                                    blemanager.sendCommand("spotify:fade")
                                 } label:{
-                                    Image(systemName: "poweroff")
+                                    Image(systemName: "forward.circle")
                                         .resizable()
                                         .frame(width: 100, height: 100)
                                 }
@@ -89,17 +75,16 @@ struct ModeView: View {
                                 .background(Color.gray.opacity(0.2))
                                 .cornerRadius(30)
                                 
-                                Text("Off")
+                                Text("Fade")
                                     .fontWeight(.bold)
                             }.padding()
                             
                             VStack{
                                 Button {
-                                    blemanager.sendCommand("mode:manual")
-                                    GoToManual = true
+                                    blemanager.sendCommand("spotify:swap")
                                 } label:{
                                     
-                                    Image(systemName: "command")
+                                    Image(systemName: "forward.end.circle")
                                         .resizable()
                                         .frame(width: 100, height: 100)
                                 }
@@ -107,39 +92,14 @@ struct ModeView: View {
                                 .background(Color.gray.opacity(0.2))
                                 .cornerRadius(30)
                                 
-                                Text("Manual")
+                                Text("Swap")
                                     .fontWeight(.bold)
                             }.padding()
+
                         }
                         
                     }
-                    
-                    
-                    
-                    
-                    .navigationDestination(isPresented: $GoToManual){
-                        ManualControlView(appState: appState, ble: blemanager)
-                    }
-                    .navigationDestination(isPresented: $GoToMusic){
-                        MusicView(appState: appState, ble: blemanager, spotifymanager: spotifymanager)
-                    }
-                    .onChange(of: spotifymanager.palette){oldpalette, newpalette in
-                        print(newpalette + "MODEVIEW")
-                        blemanager.sendCommand(newpalette)
-                    }
-                }
-                .onChange(of: scenePhase){ oldPhase, newPhase in
-                    if newPhase == .background || newPhase == .inactive {
-                        blemanager.disconnect()
-                    }
-                }
-            }
-        
+                }        
         
     }
 }
-
-
-//#Preview {
-//    ModeView()
-//}

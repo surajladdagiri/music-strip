@@ -1,6 +1,15 @@
 {
-  "originHash" : "c7e93edb0729a30977053064d79694370c82102f4ad4f17c1e72528668f2c1c1",
+  "originHash" : "44bceab4be0f5b8179e85b65f60c180039aefca5e4b78486ed422075e199b254",
   "pins" : [
+    {
+      "identity" : "colorthiefswift",
+      "kind" : "remoteSourceControl",
+      "location" : "https://github.com/yamoridon/ColorThiefSwift",
+      "state" : {
+        "revision" : "ac04a95acca965f8030a01293c31621b2a812c39",
+        "version" : "0.5.0"
+      }
+    },
     {
       "identity" : "ios-sdk",
       "kind" : "remoteSourceControl",

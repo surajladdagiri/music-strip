@@ -169,7 +169,7 @@ class BLEManager: NSObject, ObservableObject, CBCentralManagerDelegate, CBPeriph
         //manager.cancelPeripheralConnection(ESP32!)
         //connected = false
         //FinishedAuto = true
-        print("NOT WORKING!!!!!!!")
+        print("\n")
     }
     
     func sendCommand(_ command: String) {
