@@ -56,6 +56,7 @@ struct ModeView: View {
                         VStack{
                             Button {
                                 if spotifymanager.appRemote.isConnected {
+                                    blemanager.sendCommand("mode:spotify")
                                     GoToMusic = true
                                 }else{
                                     spotifymanager.authorize()
@@ -124,7 +125,7 @@ struct ModeView: View {
                         MusicView(appState: appState, ble: blemanager, spotifymanager: spotifymanager)
                     }
                     .onChange(of: spotifymanager.palette){oldpalette, newpalette in
-                        print(newpalette + "MODEVIEW")
+                        print(newpalette)
                         blemanager.sendCommand(newpalette)
                     }
                 }

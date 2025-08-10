@@ -39,14 +39,20 @@ CRGB spotify_palette[]= {
   CRGB::Green,
   CRGB::Blue,
   CRGB::Indigo,
-  CRGB::Violet
+  CRGB::Violet,
+  CRGB::Red,
+  CRGB::Orange,
+  CRGB::Yellow
 };
+
+
 int spotify_size = 7;
 BLECharacteristic *pCharacteristic;
 CRGB curr_color = CRGB::Blue;
 bool killed = false;
 bool needToKill = true;
 BLEAdvertising *pAdvertising;
+String previous_command = "";
 
 class CommandCallback : public BLECharacteristicCallbacks {
   void savePreferences() {
@@ -70,6 +76,12 @@ class CommandCallback : public BLECharacteristicCallbacks {
     std::string rxValue = pCharacteristic->getValue();
     if (rxValue.length() > 0) {
       String command = String(rxValue.c_str());
+
+      if (command == previous_command) {
+        Serial.println("Duplicate command received");
+        return;
+      }
+      previous_command = command;
 
       int colon = command.indexOf(':');
       if (colon == -1) {
@@ -107,7 +119,46 @@ class CommandCallback : public BLECharacteristicCallbacks {
         else if (value == "snake") spotifyAnim = SPOTIFY_SNAKE;
         else if (value == "swap") spotifyAnim = SPOTIFY_SWAP;
         else Serial.println("Invalid spotify animation.");
+        
+      } 
+      
+      
+      
+      
+      
+      else if (key == "spotifypalette"){
+        String new_palette = value; //RXXXGXXXBXXX:RXXXGXXXBXXX:...
+        int curr_index = 0;
+        while (new_palette.indexOf(":") != -1){
+          String new_color = new_palette.substring(0,new_palette.indexOf(":")); //RXXXGXXXBXXX
+          new_color.trim();
+          int r = new_color.substring(1, new_color.indexOf("G")).toInt();
+          int g = new_color.substring(new_color.indexOf("G") + 1, new_color.indexOf("B")).toInt();
+          int b = new_color.substring(new_color.indexOf("B") + 1).toInt();
+          spotify_palette[curr_index] = CRGB(r, g, b);
+          new_palette.remove(0, new_palette.indexOf(":") + 1);
+          curr_index++;
+          if (curr_index >= 10) {
+            spotify_size = 10;
+            return;
+          }
+        }
+        int r = new_palette.substring(1, new_palette.indexOf("G")).toInt();
+        int g = new_palette.substring(new_palette.indexOf("G") + 1, new_palette.indexOf("B")).toInt();
+        int b = new_palette.substring(new_palette.indexOf("B") + 1).toInt();
+        spotify_palette[curr_index] = CRGB(r, g, b);
+        spotify_size = curr_index+1;
+
+
+        Serial.println(value);
       }
+
+
+
+
+
+
+
       if (needToKill){
         killed = true;
       }else{
@@ -116,6 +167,11 @@ class CommandCallback : public BLECharacteristicCallbacks {
       
       savePreferences();
     }
+
+
+
+
+
   }
 };
 

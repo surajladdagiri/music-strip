@@ -26,7 +26,7 @@ class SpotifyManager: NSObject, ObservableObject, SPTAppRemoteDelegate, SPTAppRe
     private var currTrack: String = UserDefaults.standard.string(forKey: "currTrack") ?? "spotify:track:6r3duEAfFTH83DuoywkG20"
     @Published var currTitle = UserDefaults.standard.string(forKey: "currTitle") ?? "Feelings by Lauv"
     private var subscribed = false
-    @Published var numColors = 5
+    @Published var numColors = 2
     @Published var palette = ""
     
     let configuration = SPTConfiguration(
@@ -130,7 +130,7 @@ class SpotifyManager: NSObject, ObservableObject, SPTAppRemoteDelegate, SPTAppRe
         }
     }
     func getPaletteColorThief(image: UIImage, numberOfColors: Int) -> String{
-        guard let colors = ColorThief.getPalette(from: image, colorCount: 10, quality: 1, ignoreWhite: true) else {
+        guard let colors = ColorThief.getPalette(from: image, colorCount: numColors, quality: 1, ignoreWhite: true) else {
             return "FAILED"
         }
         var returnString = ""
