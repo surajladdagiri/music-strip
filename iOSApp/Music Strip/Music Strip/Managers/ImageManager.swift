@@ -10,8 +10,8 @@ import SwiftUI
 import ColorThiefSwift
 
 class ImageManager: NSObject, ObservableObject {
-    private var known_colors:[(Int, Int, Int)] = [(0,0,0), (255,255,255), (255,0,0), (0,255,0), (0,0,255)]
-    private var mapped_colors:[String] = ["R0G0B0", "R255G255B255", "R255G0B0", "R0G255B0", "R0G0B255"]
+    private var known_colors:[(Int, Int, Int)] = [(0,0,0), (255,255,255), (255,0,0), (0,255,0), (0,0,255), (255, 128, 0), (255,255,0), (128,255,0), (0,255,128), (0,255,255), (0,128,255), (128,0,255), (255,0,255), (255, 0, 128)]
+    private var mapped_colors:[String] = ["R0G0B0", "R255G255B255", "R255G0B0", "R0G255B0", "R0G0B255", "R255G50B0", "R255G200B0", "R128G255B0", "R0G255B20", "R0G255B128", "R0G128B255", "R128G0B255", "R255G0B128", "R255G0B25"]
     
     
     func mapEuclidian(r: Int, g: Int, b: Int) -> String{
@@ -27,16 +27,46 @@ class ImageManager: NSObject, ObservableObject {
         return mapped_colors[minIndex]
     }
     
-    func getPaletteColorThief(image: UIImage, numberOfColors: Int) -> String{
-        guard let colors = ColorThief.getPalette(from: image, colorCount: numberOfColors, quality: 1, ignoreWhite: true) else {
+    func mapEuclidianNoDuplicates(colors: [(Int, Int, Int)]) -> String{
+        var used: Set<String> = []
+        var return_string = ""
+        for color in colors{
+            let mapped = mapEuclidian(r: color.0, g: color.1, b: color.2)
+            if !used.contains(mapped){
+                used.insert(mapped)
+                return_string += mapped + ":"
+            }
+        }
+        return_string = String(return_string.dropLast())
+        return return_string
+    }
+    
+    func mapEuclidianAllowDuplicates(colors: [(Int, Int, Int)]) -> String{
+        var return_string = ""
+        for color in colors{
+            let mapped = mapEuclidian(r: color.0, g: color.1, b: color.2)
+            return_string += mapped + ":"
+        }
+        return_string = String(return_string.dropLast())
+        return return_string
+    }
+    
+    func getPaletteColorThief(image: UIImage, numberOfColors: Int, duplicates: Bool) -> String{
+        guard let colors = ColorThief.getPalette(from: image, colorCount: numberOfColors, quality: 1, ignoreWhite: false) else {
             return "FAILED"
         }
         var returnString = ""
+        var toBeMapped: [(Int, Int, Int)] = []
         for color in colors {
-            let mapped_color = mapEuclidian(r: Int(color.r), g: Int(color.g), b: Int(color.b))
-            returnString += "R\(color.r)G\(color.g)B\(color.b):"
+            toBeMapped.append((Int(color.r), Int(color.g), Int(color.b)))
         }
-        returnString = String(returnString.dropLast())
+        if duplicates{
+            returnString = mapEuclidianAllowDuplicates(colors: toBeMapped)
+            print("ALLOWING DUPLICATES!!!!")
+        }else{
+            returnString = mapEuclidianNoDuplicates(colors: toBeMapped)
+            print("NOT ALLOWING DUPLICATES!!!!")
+        }
         return returnString
     }
 }

@@ -154,6 +154,9 @@ struct StaticView: View {
                                         CurrColor = UIColor(red: (CGFloat(uiColor.0))/255.0, green: (CGFloat(uiColor.1))/255.0, blue: (CGFloat(uiColor.2))/255.0, alpha: 1.0)
                                         CurrColorRGB = (uiColor.0, uiColor.1, uiColor.2)
                                         print("color:R\(uiColor.0)G\(uiColor.1)B\(uiColor.2)")
+                                        rValue = CGFloat(uiColor.0)
+                                        gValue = CGFloat(uiColor.1)
+                                        bValue = CGFloat(uiColor.2)
                                         blemanager.sendCommand("color:R\(uiColor.0)G\(uiColor.1)B\(uiColor.2)")
                                     }) {
                                         Text(key)

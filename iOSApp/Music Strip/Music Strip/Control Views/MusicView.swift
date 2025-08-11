@@ -14,6 +14,7 @@ struct MusicView: View {
     @ObservedObject var spotifymanager: SpotifyManager
     private var spotify_connected = false
     @State var go_to_control = false
+    @State var go_to_settings = false
     init(appState: AppState, ble: BLEManager, spotifymanager: SpotifyManager){
         self.appState = appState
         self.blemanager = ble
@@ -102,10 +103,27 @@ struct MusicView: View {
                                 .navigationDestination(isPresented: $go_to_control){
                                     DynamicView(appState: appState, ble: blemanager)
                                 }
+                            
                         }
                         
                     }
-                }        
+                }
+                .overlay(alignment: .topTrailing, content: {
+                    Button(action: {
+                        go_to_settings = true
+                    }, label: {
+                        Image(systemName: "gearshape.fill")
+
+                    })
+                    .font(.system(size: 16, weight: .bold))
+                    .foregroundStyle(.gray.opacity(0.8))
+                    .padding(.all, 8)
+                    .background(Circle().fill(.gray.opacity(0.2)))
+                    .padding()
+                })
+                .navigationDestination(isPresented: $go_to_settings){
+                    MusicSettingsView(spotifymanager: spotifymanager)
+                }
         
     }
 }

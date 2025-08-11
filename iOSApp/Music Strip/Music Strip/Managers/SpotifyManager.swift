@@ -26,8 +26,9 @@ class SpotifyManager: NSObject, ObservableObject, SPTAppRemoteDelegate, SPTAppRe
     private var currTrack: String = UserDefaults.standard.string(forKey: "currTrack") ?? "spotify:track:6r3duEAfFTH83DuoywkG20"
     @Published var currTitle = UserDefaults.standard.string(forKey: "currTitle") ?? "Feelings by Lauv"
     private var subscribed = false
-    @Published var numColors = 6
+    @Published var numColors = 7
     @Published var palette = ""
+    @Published var duplicates = false
     private var imagemanager = ImageManager()
     
     let configuration = SPTConfiguration(
@@ -112,7 +113,8 @@ class SpotifyManager: NSObject, ObservableObject, SPTAppRemoteDelegate, SPTAppRe
                     DispatchQueue.main.async {
                         withAnimation{
                             self.currAlbumArt = image
-                            self.palette = "spotifypalette:"+self.imagemanager.getPaletteColorThief(image: image, numberOfColors: self.numColors)
+                            print("Using \(self.numColors) colors")
+                            self.palette = "spotifypalette:"+self.imagemanager.getPaletteColorThief(image: image, numberOfColors: self.numColors, duplicates: self.duplicates)
                         }
                     }
                 }
