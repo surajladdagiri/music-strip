@@ -52,10 +52,10 @@ struct BluetoothView: View {
                     }
                     .buttonStyle(.borderedProminent)
                     
-                    Button("Skip"){
-                        appState.currPage = .ManualControl
-                    }
-                    .buttonStyle(.borderedProminent)
+                    //Button("Skip"){
+                    //    appState.currPage = .ManualControl
+                    //}
+                    //.buttonStyle(.borderedProminent)
                 }else{
                     
                     
