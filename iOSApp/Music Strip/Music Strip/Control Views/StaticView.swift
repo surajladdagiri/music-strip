@@ -160,6 +160,7 @@ struct StaticView: View {
                                         blemanager.sendCommand("color:R\(uiColor.0)G\(uiColor.1)B\(uiColor.2)")
                                     }) {
                                         Text(key)
+                                            .foregroundColor(Color(uiColor: UIColor(red: (CGFloat(uiColor.0))/255.0, green: (CGFloat(uiColor.1))/255.0, blue: (CGFloat(uiColor.2))/255.0, alpha: 1.0).inverted))
                                             .padding()
                                             .frame(maxWidth: .infinity, alignment: .leading)
                                             .background(Color(uiColor: UIColor(red: (CGFloat(uiColor.0))/255.0, green: (CGFloat(uiColor.1))/255.0, blue: (CGFloat(uiColor.2))/255.0, alpha: 1.0)))

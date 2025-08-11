@@ -71,4 +71,13 @@ extension UIColor {
         getRed(nil, green: nil, blue: &blue, alpha: nil)
         return Int(blue * 255)
     }
+    var inverted: UIColor {
+            var r: CGFloat = 0.0, g: CGFloat = 0.0, b: CGFloat = 0.0, a: CGFloat = 0.0
+            
+            if getRed(&r, green: &g, blue: &b, alpha: &a) {
+                return UIColor(red: 1.0 - r, green: 1.0 - g, blue: 1.0 - b, alpha: a)
+            }
+            
+            return .black
+        }
 }
