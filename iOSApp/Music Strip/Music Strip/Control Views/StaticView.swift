@@ -19,50 +19,57 @@ struct StaticView: View {
     @State private var gValue = 255.0
     @State private var bValue = 0.0
     @State private var CurrColor: UIColor = UIColor(red: 1, green: 1, blue:0, alpha: 1)
+    @State private var CurrColorRGB = (255,255,0)
     @ObservedObject var blemanager: BLEManager
     @ObservedObject var appState: AppState
     @State private var showingAlert = false
     @State private var show_rename = false
     @State private var inputText = ""
     @State private var rename_color_text = ""
-    @State private var rename_color = UIColor(red: 1, green: 1, blue:1, alpha: 1)
+    @State private var rename_color = (255,255,255)
     @State private var renameText = ""
     @Environment(\.scenePhase) private var scenePhase
-    @State private var saved_colors: [String:UIColor] = ["White":UIColor(red: 1.0, green: 1.0, blue: 1.0, alpha: 1.0), "Black":UIColor(red: 0.0, green: 0.0, blue: 0.0, alpha: 1.0)]
+    @State private var saved_colors: [String:(Int, Int, Int)] = ["White":(255,255,255), "Black":(0,0,0)]
     
-    func saveColorDict(_ dict: [String: UIColor]) {
-        var dataDict = [String: Data]()
-        for (key, color) in dict {
-            if let data = try? NSKeyedArchiver.archivedData(withRootObject: color, requiringSecureCoding: false) {
-                dataDict[key] = data
-            }
+    func saveColorDict(_ dict: [String: (Int, Int, Int)]) {
+        var storageDict = [String: [Int]]()
+        
+        for (key, tuple) in dict {
+            storageDict[key] = [tuple.0, tuple.1, tuple.2]
         }
-        UserDefaults.standard.set(dataDict, forKey: "saved_colors")
+        
+        UserDefaults.standard.set(storageDict, forKey: "saved_colors")
     }
 
-    func loadColorDict() -> [String: UIColor]? {
-        guard let dataDict = UserDefaults.standard.dictionary(forKey: "saved_colors") as? [String: Data] else { return nil }
+    func loadColorDict() -> [String: (Int, Int, Int)]? {
+        guard let storageDict = UserDefaults.standard.dictionary(forKey: "saved_colors") as? [String: [Int]] else {
+            return nil
+        }
         
-        var colorDict = [String: UIColor]()
-        for (key, data) in dataDict {
-            if let color = try? NSKeyedUnarchiver.unarchivedObject(ofClass: UIColor.self, from: data) {
-                colorDict[key] = color
+        var colorDict = [String: (Int, Int, Int)]()
+        
+        for (key, array) in storageDict {
+            if array.count == 3 {
+                colorDict[key] = (array[0], array[1], array[2])
             }
         }
+        
         return colorDict
     }
     
+    
     init(appState: AppState, ble: BLEManager){
-        guard let dataDict = UserDefaults.standard.dictionary(forKey: "saved_colors") as? [String: Data] else {
+        guard let storageDict = UserDefaults.standard.dictionary(forKey: "saved_colors") as? [String: [Int]] else {
             self.appState = appState
             self.blemanager = ble
             return
         }
         
-        var colorDict = [String: UIColor]()
-        for (key, data) in dataDict {
-            if let color = try? NSKeyedUnarchiver.unarchivedObject(ofClass: UIColor.self, from: data) {
-                colorDict[key] = color
+        var colorDict = [String: (Int, Int, Int)]()
+        
+        for (key, array) in storageDict {
+            if array.count == 3 {
+                colorDict[key] = (array[0], array[1], array[2])
             }
         }
         self.saved_colors = colorDict
@@ -144,14 +151,15 @@ struct StaticView: View {
 
                                     Button(action: {
                                         print("Tapped \(key)")
-                                        CurrColor = uiColor
-                                        print("color:R\(uiColor.r)G\(uiColor.r)B\(uiColor.b)")
-                                        blemanager.sendCommand("color:R\(uiColor.r)G\(uiColor.r)B\(uiColor.b)")
+                                        CurrColor = UIColor(red: (CGFloat(uiColor.0))/255.0, green: (CGFloat(uiColor.1))/255.0, blue: (CGFloat(uiColor.2))/255.0, alpha: 1.0)
+                                        CurrColorRGB = (uiColor.0, uiColor.1, uiColor.2)
+                                        print("color:R\(uiColor.0)G\(uiColor.1)B\(uiColor.2)")
+                                        blemanager.sendCommand("color:R\(uiColor.0)G\(uiColor.1)B\(uiColor.2)")
                                     }) {
                                         Text(key)
                                             .padding()
                                             .frame(maxWidth: .infinity, alignment: .leading)
-                                            .background(Color(uiColor: uiColor))
+                                            .background(Color(uiColor: UIColor(red: (CGFloat(uiColor.0))/255.0, green: (CGFloat(uiColor.1))/255.0, blue: (CGFloat(uiColor.2))/255.0, alpha: 1.0)))
                                             .cornerRadius(8)
                                     }
                                     .swipeActions(edge: .leading) {
@@ -188,7 +196,6 @@ struct StaticView: View {
                                     saved_colors[renameText] = rename_color
                                     saved_colors[rename_color_text] = nil
                                     saveColorDict(saved_colors)
-                                    saveColorDict(saved_colors)
                                 }
                                 Button("Cancel", role: .cancel) {
                                 }
@@ -198,7 +205,7 @@ struct StaticView: View {
                             .alert("Enter Color Name", isPresented: $showingAlert) {
                                     TextField("Color Name", text: $inputText)
                                     Button("Add") {
-                                        saved_colors[inputText] = CurrColor
+                                        saved_colors[inputText] = CurrColorRGB
                                         saveColorDict(saved_colors)
                                         inputText = ""
                                         
@@ -248,12 +255,15 @@ struct StaticView: View {
                     }
                     .onChange(of: rValue){oldValue, newValue in
                         CurrColor = UIColor(red: (rValue/255.0), green: (gValue/255.0), blue: (bValue/255.0), alpha: 1)
+                        CurrColorRGB = (Int(rValue), Int(gValue), Int(bValue))
                     }
                     .onChange(of: gValue){oldValue, newValue in
                         CurrColor = UIColor(red: (rValue/255.0), green: (gValue/255.0), blue: (bValue/255.0), alpha: 1)
+                        CurrColorRGB = (Int(rValue), Int(gValue), Int(bValue))
                     }
                     .onChange(of: bValue){oldValue, newValue in
                         CurrColor = UIColor(red: (rValue/255.0), green: (gValue/255.0), blue: (bValue/255.0), alpha: 1)
+                        CurrColorRGB = (Int(rValue), Int(gValue), Int(bValue))
                     }
                     
         }
