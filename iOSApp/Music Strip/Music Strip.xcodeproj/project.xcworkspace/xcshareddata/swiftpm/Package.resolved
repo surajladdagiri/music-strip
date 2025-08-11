@@ -1,6 +1,15 @@
 {
-  "originHash" : "44bceab4be0f5b8179e85b65f60c180039aefca5e4b78486ed422075e199b254",
+  "originHash" : "d34266276844131cf3727a01e74211715c9ef0d6df9fc0d7a9db14e4851fc7c8",
   "pins" : [
+    {
+      "identity" : "alderis",
+      "kind" : "remoteSourceControl",
+      "location" : "http://github.com/hbang/Alderis.git",
+      "state" : {
+        "revision" : "92cfde8ee6e76fa28378c644b9be81a5dcf233b0",
+        "version" : "1.2.4"
+      }
+    },
     {
       "identity" : "colorthiefswift",
       "kind" : "remoteSourceControl",

@@ -26,8 +26,9 @@ class SpotifyManager: NSObject, ObservableObject, SPTAppRemoteDelegate, SPTAppRe
     private var currTrack: String = UserDefaults.standard.string(forKey: "currTrack") ?? "spotify:track:6r3duEAfFTH83DuoywkG20"
     @Published var currTitle = UserDefaults.standard.string(forKey: "currTitle") ?? "Feelings by Lauv"
     private var subscribed = false
-    @Published var numColors = 2
+    @Published var numColors = 6
     @Published var palette = ""
+    private var imagemanager = ImageManager()
     
     let configuration = SPTConfiguration(
         clientID: "1b563173e0f24796a66de09c8e177691",
@@ -111,7 +112,7 @@ class SpotifyManager: NSObject, ObservableObject, SPTAppRemoteDelegate, SPTAppRe
                     DispatchQueue.main.async {
                         withAnimation{
                             self.currAlbumArt = image
-                            self.palette = "spotifypalette:"+self.getPaletteColorThief(image: image, numberOfColors: self.numColors)
+                            self.palette = "spotifypalette:"+self.imagemanager.getPaletteColorThief(image: image, numberOfColors: self.numColors)
                         }
                     }
                 }
@@ -129,22 +130,6 @@ class SpotifyManager: NSObject, ObservableObject, SPTAppRemoteDelegate, SPTAppRe
             UserDefaults.standard.set(currTrack, forKey: "currTrack")
         }
     }
-    func getPaletteColorThief(image: UIImage, numberOfColors: Int) -> String{
-        guard let colors = ColorThief.getPalette(from: image, colorCount: numColors, quality: 1, ignoreWhite: true) else {
-            return "FAILED"
-        }
-        var returnString = ""
-        for color in colors {
-            returnString += "R\(color.r)G\(color.g)B\(color.b):"
-        }
-        returnString = String(returnString.dropLast())
-        
-        return returnString
-    }
-    
-    
-    
-    
     
     
 }

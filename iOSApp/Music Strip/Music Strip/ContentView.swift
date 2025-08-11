@@ -8,67 +8,68 @@
 
 import SwiftUI
 
-/*
- @State private var savedColors: [Color] = [.red, .blue, .green, .yellow]  // A few colors to test the list
-
-     var body: some View {
-         VStack(spacing: 20) {
-             Image(systemName: "lightbulb")
-                 .resizable()
-                 .aspectRatio(contentMode: .fit)
-                 .frame(width: 80, height: 80)
-                 .foregroundColor(.yellow)
-                 .padding(.bottom, 20)
-
-             Text("Saved Colors:")
-                 .font(.system(size: 20, weight: .bold, design: .default))
-                 .padding()
-
-             // Display the list of colors
-             List(savedColors, id: \.self) { color in
-                 Text("Color")
-                     .foregroundColor(color)  // Change text color to the color stored
-                     .font(.system(size: 20, weight: .bold, design: .default))
-                     .padding(10)
-                     .background(color.opacity(0.3))  // Slight background color to highlight the color
-                     .cornerRadius(10)
-             }
-             .padding(.horizontal)
-
-             // Just for UI testing: a button to test adding a new color
-             Button("Add Random Color") {
-                 let randomColor = [Color.red, Color.blue, Color.green, Color.yellow, Color.purple].randomElement()!
-                 savedColors.append(randomColor)  // Add a new color to the list
-             }
-             .padding()
-             .background(Color.blue)
-             .foregroundColor(.white)
-             .cornerRadius(10)
-         }
-         .padding()
-     }
- */
-
 
 
 struct ContentView: View {
     @State private var sliderValue = 50.0
+    @State private var rValue = 255.0
+    @State private var gValue = 255.0
+    @State private var bValue = 0.0
     @State private var brightness: CGFloat = 0.5
     @State private var speed: CGFloat = 0.5
     @State private var BrightnessIcon = "sun.min.fill"
     @State private var SpeedIcon = "tortoise.fill"
     @State private var showPicker = false
-    @State private var CurrColor: UIColor = UIColor(red: 0.5, green: 1, blue:1, alpha: 1)
-    @State private var savedColors: [Color] = [.red, .blue, .green, .yellow, .indigo, .red, .orange, .yellow, .green, .blue, .indigo, .purple]
+    @State private var CurrColor: UIColor = UIColor(red: 1, green: 1, blue:0, alpha: 1)
     //@ObservedObject var blemanager: BLEManager
     //@ObservedObject var appState: AppState
-    //@Environment(\.scenePhase) private var scenePhase
+    @State private var showingAlert = false
+    @State private var show_rename = false
+    @State private var inputText = ""
+    @State private var rename_color_text = ""
+    @State private var rename_color = UIColor(red: 1, green: 1, blue:1, alpha: 1)
+    @State private var renameText = ""
+    @Environment(\.scenePhase) private var scenePhase
+    @State private var saved_colors: [String:UIColor] = ["White":UIColor(red: 1.0, green: 1.0, blue: 1.0, alpha: 1.0), "Black":UIColor(red: 0.0, green: 0.0, blue: 0.0, alpha: 1.0)]
+    
+    func saveColorDict(_ dict: [String: UIColor]) {
+        var dataDict = [String: Data]()
+        for (key, color) in dict {
+            if let data = try? NSKeyedArchiver.archivedData(withRootObject: color, requiringSecureCoding: false) {
+                dataDict[key] = data
+            }
+        }
+        UserDefaults.standard.set(dataDict, forKey: "saved_colors")
+    }
+
+    func loadColorDict() -> [String: UIColor]? {
+        guard let dataDict = UserDefaults.standard.dictionary(forKey: "saved_colors") as? [String: Data] else { return nil }
+        
+        var colorDict = [String: UIColor]()
+        for (key, data) in dataDict {
+            if let color = try? NSKeyedUnarchiver.unarchivedObject(ofClass: UIColor.self, from: data) {
+                colorDict[key] = color
+            }
+        }
+        return colorDict
+    }
     
     //init(appState: AppState, ble: BLEManager){
     //    self.appState = appState
     //    self.blemanager = ble
     //}
     
+    init(){
+        guard let dataDict = UserDefaults.standard.dictionary(forKey: "saved_colors") as? [String: Data] else { return }
+        
+        var colorDict = [String: UIColor]()
+        for (key, data) in dataDict {
+            if let color = try? NSKeyedUnarchiver.unarchivedObject(ofClass: UIColor.self, from: data) {
+                colorDict[key] = color
+            }
+        }
+        self.saved_colors = colorDict
+    }
     
     var body: some View {
             VStack(spacing: 20){
@@ -76,47 +77,131 @@ struct ContentView: View {
                     .resizable()
                     .aspectRatio(contentMode: .fit)
                     .frame(width: 80, height: 80)
-                    .foregroundColor(.yellow)
+                    .foregroundColor(Color(CurrColor))
+
                 
                     VStack{
+                        Slider(value: $rValue, in: 0...255, onEditingChanged: {editing in
+                            CurrColor = UIColor(red: rValue/255.0, green: gValue/255.0, blue: bValue/255.0, alpha: 1)
+                            print(editing)
+                        })
+                        Slider(value: $gValue, in: 0...255, onEditingChanged: {editing in
+                            CurrColor = UIColor(red: rValue/255.0, green: gValue/255.0, blue: bValue/255.0, alpha: 1)
+                        })
+                        Slider(value: $bValue, in: 0...255, onEditingChanged: {editing in
+                            CurrColor = UIColor(red: rValue/255.0, green: gValue/255.0, blue: bValue/255.0, alpha: 1)
+                        })
+                                    Text("Current Value: \(rValue, specifier: "%.0f"), \(rValue, specifier: "%.0f"), \(rValue, specifier: "%.0f")")
                         
-                        Button("Pick a color"){
-                            showPicker = true
-                        }.foregroundColor(Color(uiColor: CurrColor))
+                        Button("Send Color"){
+                            //showPicker = true
+                            
+                        }.buttonStyle(.borderedProminent)
+                            .padding()
                             .font(.system(size: 20, weight: .bold, design: .default))
-                            .padding(10)
-                            .background(Color(uiColor: CurrColor).opacity(0.3))
-                            .cornerRadius(10)
-                            .padding(.top)
+                            .sheet(isPresented: $showPicker, content: {
+                                        ColorPickerView(
+                                            title: "Pick a Color",
+                                            selectedColor: CurrColor,
+                                            didSelectColor: { color in
+                                                self.CurrColor = color
+                                            }
+                                        )
+                                        .padding(.top, 8)
+                                        .background(.white)
+                                        .interactiveDismissDisabled(false)
+                                        .presentationDetents([.height(640)])
+                                        .overlay(alignment: .topTrailing, content: {
+                                            Button(action: {
+                                                //blemanager.sendCommand("color:R\(newValue.r)G\(newValue.r)B\(newValue.b)")
+                                                showPicker = false
+                                            }, label: {
+                                                Image(systemName: "xmark")
+
+                                            })
+                                            .font(.system(size: 16, weight: .bold))
+                                            .foregroundStyle(.gray.opacity(0.8))
+                                            .padding(.all, 8)
+                                            .background(Circle().fill(.gray.opacity(0.2)))
+                                            .padding()
+                                        })
+                                    })
+                        
                         Text("Saved Colors:")
                             .font(.system(size: 20, weight: .bold, design: .default))
-                            .padding(.top, 5)
+                        
+                        List {
+                            ForEach(saved_colors.keys.sorted(), id: \.self) { key in
+                                if let uiColor = saved_colors[key] {
 
-                            List(savedColors, id: \.self) { color in
-                                    Button("Color"){
+                                    Button(action: {
+                                        print("Tapped \(key)")
+                                        //blemanager.sendCommand("color:R\(uiColor.r)G\(uiColor.r)B\(uiColor.b)")
+                                    }) {
+                                        Text(key)
+                                            .padding()
+                                            .frame(maxWidth: .infinity, alignment: .leading)
+                                            .background(Color(uiColor: uiColor))
+                                            .cornerRadius(8)
+                                    }
+                                    .swipeActions(edge: .leading) {
+                                        Button(role: .destructive) {
+                                            saved_colors[key] = nil
+                                        } label: {
+                                            Label("Delete", systemImage: "trash.fill")
+                                        }
+                                    }
+                                    .swipeActions(edge: .trailing){
+                                        Button {
+                                            show_rename = true
+                                            rename_color = uiColor
+                                            rename_color_text = key
+                                            renameText = key
+                                        } label: {
+                                            Label("Rename", systemImage: "pencil")
+                                        }
+                                    }
+ 
+                                }
+                            }
+                        }.contentMargins(.top, 0)
+                        
+                        Button("Save Current Color"){
+                            showingAlert = true
+                            
+                        }.buttonStyle(.borderedProminent)
+                            .padding()
+                            .font(.system(size: 20, weight: .bold, design: .default))
+                            .alert("Enter Color Name", isPresented: $show_rename) {
+                                TextField("Color Name", text: $renameText)
+                                Button("Rename") {
+                                    saved_colors[renameText] = rename_color
+                                    saved_colors[rename_color_text] = nil
+                                    saveColorDict(saved_colors)
+                                    saveColorDict(saved_colors)
+                                }
+                                Button("Cancel", role: .cancel) {
+                                }
+                            } message: {
+                                Text("Please Input a Color Name")
+                            }
+                            .alert("Enter Color Name", isPresented: $showingAlert) {
+                                    TextField("Color Name", text: $inputText)
+                                    Button("Add") {
+                                        saved_colors[inputText] = CurrColor
+                                        saveColorDict(saved_colors)
+                                        inputText = ""
                                         
                                     }
-                                        .foregroundColor(color)  // Change text color to the color stored
-                                        .font(.system(size: 20, weight: .bold, design: .default))
-                                        .padding(10)
-                                        .background(color.opacity(0.3))  // Slight background color to highlight the color
-                                        .cornerRadius(10)
-                                
-                                
-                            }
-                            .padding(.bottom)
-                            .contentMargins(.top, 0)
-                        Button("Save Current Color") {
-                            
-                        }.font(.system(size: 20, weight: .bold, design: .default))
-                        .padding(15)
-                        .background(.gray.opacity(0.2))
-                        .cornerRadius(10)
-                        //.padding(.bottom)
+                                    Button("Cancel", role: .cancel) {
+                                    }
+                                } message: {
+                                    Text("Please Input a Color Name")
+                                }
+                        
+                        
                         HStack{
-                            
                             VStack {
-                                
                                 CustomSlider(
                                     sliderProgress: $brightness,
                                     symbol: .init(
@@ -137,7 +222,7 @@ struct ContentView: View {
                             }.padding()
                         }
                     }.onChange(of: CurrColor) { oldValue, newValue in
-                        //blemanager.sendCommand("color:R\(Int((100*newValue).rounded()))")
+                        //blemanager.sendCommand("color:R\(newValue.r)G\(newValue.r)B\(newValue.b)")
                     }
                     
                     .onChange(of: speed) { oldValue, newValue in
@@ -164,11 +249,7 @@ struct ContentView: View {
                             }
                         }
                     }
-                    //.onChange(of: scenePhase){ oldPhase, newPhase in
-                    //    if newPhase == .background || newPhase == .inactive {
-                    //        blemanager.disconnect()
-                    //    }
-                    //}
+                    
         }
         
     }

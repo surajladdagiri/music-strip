@@ -10,6 +10,7 @@
 		44125DE02E48397800BC8D57 /* ColorThiefSwift in Frameworks */ = {isa = PBXBuildFile; productRef = 44125DDF2E48397800BC8D57 /* ColorThiefSwift */; };
 		446360882E441E6B0077A2E2 /* CoreBluetooth.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 446360872E441E6B0077A2E2 /* CoreBluetooth.framework */; };
 		446360AA2E4471B70077A2E2 /* ModernSlider in Frameworks */ = {isa = PBXBuildFile; productRef = 446360A92E4471B70077A2E2 /* ModernSlider */; };
+		4491A34D2E49B9A60054B609 /* Alderis in Frameworks */ = {isa = PBXBuildFile; productRef = 4491A34C2E49B9A60054B609 /* Alderis */; };
 		44D6CF262E4565EE00E2A1BF /* SpotifyiOS in Frameworks */ = {isa = PBXBuildFile; productRef = 44D6CF252E4565EE00E2A1BF /* SpotifyiOS */; };
 /* End PBXBuildFile section */
 
@@ -60,6 +61,7 @@
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				4491A34D2E49B9A60054B609 /* Alderis in Frameworks */,
 				446360AA2E4471B70077A2E2 /* ModernSlider in Frameworks */,
 				44D6CF262E4565EE00E2A1BF /* SpotifyiOS in Frameworks */,
 				446360882E441E6B0077A2E2 /* CoreBluetooth.framework in Frameworks */,
@@ -136,6 +138,7 @@
 				446360A92E4471B70077A2E2 /* ModernSlider */,
 				44D6CF252E4565EE00E2A1BF /* SpotifyiOS */,
 				44125DDF2E48397800BC8D57 /* ColorThiefSwift */,
+				4491A34C2E49B9A60054B609 /* Alderis */,
 			);
 			productName = "Music Strip";
 			productReference = 446360572E441CF30077A2E2 /* Music Strip.app */;
@@ -223,6 +226,7 @@
 				446360A82E4471B70077A2E2 /* XCRemoteSwiftPackageReference "ModernSlider" */,
 				44D6CF242E4565EE00E2A1BF /* XCRemoteSwiftPackageReference "ios-sdk" */,
 				44125DDE2E48397800BC8D57 /* XCRemoteSwiftPackageReference "ColorThiefSwift" */,
+				4491A34B2E49B9A60054B609 /* XCRemoteSwiftPackageReference "Alderis" */,
 			);
 			preferredProjectObjectVersion = 77;
 			productRefGroup = 446360582E441CF30077A2E2 /* Products */;
@@ -617,6 +621,14 @@
 				kind = branch;
 			};
 		};
+		4491A34B2E49B9A60054B609 /* XCRemoteSwiftPackageReference "Alderis" */ = {
+			isa = XCRemoteSwiftPackageReference;
+			repositoryURL = "http://github.com/hbang/Alderis.git";
+			requirement = {
+				kind = upToNextMajorVersion;
+				minimumVersion = 1.2.4;
+			};
+		};
 		44D6CF242E4565EE00E2A1BF /* XCRemoteSwiftPackageReference "ios-sdk" */ = {
 			isa = XCRemoteSwiftPackageReference;
 			repositoryURL = "https://github.com/spotify/ios-sdk";
@@ -637,6 +649,11 @@
 			isa = XCSwiftPackageProductDependency;
 			package = 446360A82E4471B70077A2E2 /* XCRemoteSwiftPackageReference "ModernSlider" */;
 			productName = ModernSlider;
+		};
+		4491A34C2E49B9A60054B609 /* Alderis */ = {
+			isa = XCSwiftPackageProductDependency;
+			package = 4491A34B2E49B9A60054B609 /* XCRemoteSwiftPackageReference "Alderis" */;
+			productName = Alderis;
 		};
 		44D6CF252E4565EE00E2A1BF /* SpotifyiOS */ = {
 			isa = XCSwiftPackageProductDependency;

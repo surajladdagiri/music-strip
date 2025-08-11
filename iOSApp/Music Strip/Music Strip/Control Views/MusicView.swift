@@ -13,6 +13,7 @@ struct MusicView: View {
     @Environment(\.scenePhase) private var scenePhase
     @ObservedObject var spotifymanager: SpotifyManager
     private var spotify_connected = false
+    @State var go_to_control = false
     init(appState: AppState, ble: BLEManager, spotifymanager: SpotifyManager){
         self.appState = appState
         self.blemanager = ble
@@ -49,6 +50,7 @@ struct MusicView: View {
                         VStack{
                             Button {
                                 blemanager.sendCommand("spotify:snake")
+                                go_to_control = true
                             } label:{
                                 Image(systemName: "arrowshape.right.circle")
                                     .resizable()
@@ -66,6 +68,7 @@ struct MusicView: View {
                             VStack{
                                 Button {
                                     blemanager.sendCommand("spotify:fade")
+                                    go_to_control = true
                                 } label:{
                                     Image(systemName: "forward.circle")
                                         .resizable()
@@ -82,6 +85,7 @@ struct MusicView: View {
                             VStack{
                                 Button {
                                     blemanager.sendCommand("spotify:swap")
+                                    go_to_control = true
                                 } label:{
                                     
                                     Image(systemName: "forward.end.circle")
@@ -95,7 +99,9 @@ struct MusicView: View {
                                 Text("Swap")
                                     .fontWeight(.bold)
                             }.padding()
-
+                                .navigationDestination(isPresented: $go_to_control){
+                                    DynamicView(appState: appState, ble: blemanager)
+                                }
                         }
                         
                     }

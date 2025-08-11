@@ -6,7 +6,7 @@
 #include <FastLED.h>
 
 #define LED_PIN     5
-#define NUM_LEDS    300
+#define NUM_LEDS    150
 #define CHIPSET     WS2812B
 #define COLOR_ORDER GRB
 #define SERVICE_UUID "54df84fc-7f55-4867-bb29-617f9d2a7925"
@@ -103,7 +103,15 @@ class CommandCallback : public BLECharacteristicCallbacks {
         FastLED.setBrightness(brightness);
       } else if (key == "steps") {
         steps = value.toInt();
-      } else if (key == "mode") {
+      } else if (key == "color"){
+        int r = value.substring(1, value.indexOf("G")).toInt();
+        int g = value.substring(value.indexOf("G") + 1, value.indexOf("B")).toInt();
+        int b = value.substring(value.indexOf("B") + 1).toInt();
+        curr_color = CRGB(r, g, b);
+        Serial.println("Current color set to: " + String(r) + "," + String(g) + "," + String(b));
+      }
+      
+      else if (key == "mode") {
         if (value == "off") mode = OFF;
         else if (value == "manual") mode = MANUAL;
         else if (value == "spotify") mode = SPOTIFY;
@@ -122,7 +130,12 @@ class CommandCallback : public BLECharacteristicCallbacks {
         
       } 
       
-      
+      else if (key == "manualstatic"){
+        int r = value.substring(1, value.indexOf("G")).toInt();
+        int g = value.substring(value.indexOf("G") + 1, value.indexOf("B")).toInt();
+        int b = value.substring(value.indexOf("B") + 1).toInt();
+        curr_color = CRGB(r, g, b);
+      }
       
       
       
