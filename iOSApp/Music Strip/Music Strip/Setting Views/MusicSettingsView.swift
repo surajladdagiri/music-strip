@@ -15,6 +15,7 @@ struct MusicSettingsView: View {
     @State var selectedMode: mode
     @ObservedObject var spotifymanager: SpotifyManager
     @State var sliderValue: Double
+    @State var selectedAlgorithm: Algorithm
     
     init(spotifymanager: SpotifyManager){
         self.spotifymanager = spotifymanager
@@ -23,6 +24,8 @@ struct MusicSettingsView: View {
         }else {
             selectedMode = .no_duplicates
         }
+        
+        self.selectedAlgorithm = spotifymanager.algorithm
         sliderValue = Double(spotifymanager.numColors)
         
     }
@@ -33,6 +36,14 @@ struct MusicSettingsView: View {
             Text("Mode:")
                 .font(.system(size: 34, weight: .bold, design: .default))
                 .padding()
+            Picker("Select Algorithm:", selection: $selectedAlgorithm) {
+                Text("Modified Median Cut Quantization (MMCQ)")
+                    .tag(Algorithm.mmcq)
+                Text("K-Means Clustering")
+                    .tag(Algorithm.kmeans)
+            }
+            .padding()
+
             Picker("Select Mode:", selection: $selectedMode) {
                 Text("Duplicates Allowed")
                     .tag(mode.duplicates)
@@ -40,14 +51,13 @@ struct MusicSettingsView: View {
                     .tag(mode.no_duplicates)
             }
             .padding()
-            Slider(
+                        Slider(
                             value: $sliderValue,
-                            in: 2...10,         // Define the minimum and maximum values
-                            step: 1.0           // Set the step increment (e.g., 10.0 for increments of 10)
+                            in: 2...10,         
+                            step: 1.0
                         )
-                        .padding() // Add some padding around the slider
+                        .padding()
 
-                        // Display the current value of the slider
                         Text("Value: \(sliderValue, specifier: "%.0f")")
             
         }.onChange(of: selectedMode) { oldValue, newValue in
@@ -58,6 +68,11 @@ struct MusicSettingsView: View {
                 spotifymanager.duplicates = false
             }
         }
+        .onChange(of: selectedAlgorithm) { oldValue, newValue in
+            print(newValue)
+            spotifymanager.algorithm = newValue
+        }
+
         .onChange(of: sliderValue){oldValue, newValue in
             spotifymanager.numColors = Int(newValue)
         }

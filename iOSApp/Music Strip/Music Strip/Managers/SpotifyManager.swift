@@ -9,9 +9,13 @@
 import SpotifyiOS
 import SwiftUI
 import ColorThiefSwift
+import AVFoundation
 
 enum SpotifyError: Error {
     case unknown, callback, notinstalled, connection, subscription
+}
+enum Algorithm {
+    case kmeans, mmcq
 }
 
 class SpotifyManager: NSObject, ObservableObject, SPTAppRemoteDelegate, SPTAppRemotePlayerStateDelegate {
@@ -29,6 +33,7 @@ class SpotifyManager: NSObject, ObservableObject, SPTAppRemoteDelegate, SPTAppRe
     @Published var numColors = 7
     @Published var palette = ""
     @Published var duplicates = false
+    @Published var algorithm = Algorithm.mmcq
     private var imagemanager = ImageManager()
     
     let configuration = SPTConfiguration(
@@ -114,7 +119,14 @@ class SpotifyManager: NSObject, ObservableObject, SPTAppRemoteDelegate, SPTAppRe
                         withAnimation{
                             self.currAlbumArt = image
                             print("Using \(self.numColors) colors")
-                            self.palette = "spotifypalette:"+self.imagemanager.getPaletteColorThief(image: image, numberOfColors: self.numColors, duplicates: self.duplicates)
+                            if self.algorithm == .mmcq{
+                                print("Using Color Thief")
+                                self.palette = "spotifypalette:"+self.imagemanager.getPaletteColorThief(image: image, numberOfColors: self.numColors, duplicates: self.duplicates)
+                            }
+                            else {
+                                print("Using K-Means")
+                                self.palette = "spotifypalette:"+self.imagemanager.getPaletteKMeans(image: image, numberOfColors: self.numColors, duplicates: self.duplicates)
+                            }
                         }
                     }
                 }

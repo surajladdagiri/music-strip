@@ -20,6 +20,7 @@
 		<string>processing</string>
 		<string>fetch</string>
 		<string>bluetooth-central</string>
+		<string>audio</string>
 	</array>
 </dict>
 </plist>
